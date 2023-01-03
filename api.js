@@ -52,61 +52,68 @@ const get_data = async (request) => {
 }
 
 const api_middleware =  async (pathname, request) => {
-  let response;
-  try {
-    let data ={};
-    const apiSrc = `${Deno.cwd()}/src/_app`
-    const auth = request.headers.get("authorization");
-    const referer = request.headers.get("referer");
-    const paths = pathname.split('/')
-    let subPath=''
-    if(paths.length > 3){
-      paths.pop()
-    }
-  
-   
-    const apiPath = `${paths.reverse().join('/')}${subPath}`
-  
-    // added server cors
- 
-    if(!is_authenticated(auth) && !valid_domain(request.headers.get("referer")) && !referer){
-      throw new Error('Unotharized')
-    }
 
-    if(request.method !== "GET"){
-      data = await get_data(request) 
-    }
-
-    const {default: apiMethod} = await import(`${Deno.cwd()}/src/_app/${apiPath}/${request.method.toLowerCase()}.js`)
-    const json = await apiMethod(request,data.result)
-
-    if (data.result === 'form') {
-
-      let page = '/status'
-      // convert this to jsx for customizability
-      return await html('/status')
-    }
-
-
-    response = Response.json(json,{
-      status: json.status
-    });
-
+  const isFormType = request.headers.get("content-type") === 'application/x-www-form-urlencoded' 
+  const isApiCall =  pathname.includes('api') || request.headers.get("host").includes('api')
+  if (isApiCall || isFormType ) {
+    let response;
+    try {
+      let data ={};
+      const apiSrc = `${Deno.cwd()}/src/_app`
+      const auth = request.headers.get("authorization");
+      const referer = request.headers.get("referer");
+      const paths = pathname.split('/')
+      let subPath=''
+      if(paths.length > 3){
+        paths.pop()
+      }
     
-  } catch (err) {
-    // log();
-    globalThis.errorObject = {
-       title: `SERVER:API:ERROR:${request.url}`,
-      msg: err.message,
+     
+      const apiPath = `${paths.reverse().join('/')}${subPath}`
+    
+      // added server cors
+   
+      if(!is_authenticated(auth) && !valid_domain(request.headers.get("referer")) && !referer){
+        throw new Error('Unotharized')
+      }
+  
+      if(request.method !== "GET"){
+        data = await get_data(request) 
+      }
+  
+      const {default: apiMethod} = await import(`${Deno.cwd()}/src/_app/${apiPath}/${request.method.toLowerCase()}.js`)
+      const json = await apiMethod(request,data.result)
+  
+      if (data.result === 'form') {
+  
+        let page = '/status'
+        // convert this to jsx for customizability
+        return await html('/status')
+      }
+  
+  
+      response = Response.json(json,{
+        status: json.status
+      });
+  
+      
+    } catch (err) {
+      // log();
+      globalThis.errorObject = {
+         title: `SERVER:API:ERROR:${request.url}`,
+        msg: err.message,
+      }
+   
+      // TODO: Figire out who broke it 
+      // return html page instead
+      // use 303 page header response
+      console.log(globalThis.errorObject)
+      return await html('/error')
     }
- 
-    // TODO: Figire out who broke it 
-    // return html page instead
-    console.log(globalThis.errorObject)
-    return await html('/error')
+   
+    return response
   }
- 
-  return response;
+;
 };
 
 

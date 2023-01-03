@@ -62,6 +62,7 @@ export const error_response = () => {
   return html_response(Deno.readFile(errorPath))
 }
 
+// redirect to 303 error page
 const html_response = (res) => {
   return new Response(res, {
     headers: {
