@@ -13,6 +13,7 @@ const asset_middlware  = async (pathname,request) => {
       const content_type = `text/${type}`
       const file_path = `${Deno.cwd()}/src/public${pathname}`
 
+
 //        find out if there is a leak here
       const file = await Deno.open(file_path, { read: true });
       const content = file.readable;
