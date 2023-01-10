@@ -30,9 +30,8 @@ const middleware = async (request, info) => {
             await service(Object.values(extensions),pathname,request)
             return resp
         }catch(err){
-        
-        console.log(err)
-          throw Error(err.message)
+            console.log(err)
+            throw Error(err.message)
         }
   
    
