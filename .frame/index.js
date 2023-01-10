@@ -20,7 +20,7 @@ const service = async (ext, pathname, req) => {
 
 const middleware = async (request, info) => {
       try {
-        
+        console.log(Deno.cwd())
         const { pathname } = new URL(request.url);
         window.extPath = window?._cwd ? window._cwd: Deno.cwd() 
         console.log(`${window.extPath}/ext.js`)
