@@ -25,7 +25,7 @@ const middleware = async (request, info) => {
         window.extPath = window._cwd ? window._cwd: Deno.cwd() 
    
         try{ 
-            
+            console.log(`${window.extPath}/ext.js`)
             const extensions = Deno.env.get('env') ? await import(`${window.extPath}/extensions.js`) : await import(`${window.extPath}/ext.js`)
             await service(Object.values(extensions),pathname,request)
             return resp
