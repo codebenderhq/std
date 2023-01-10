@@ -59,7 +59,6 @@ const api_middleware =  async (pathname, request) => {
     let response;
     try {
       let data ={};
-      const apiSrc = `${Deno.cwd()}/src/_app`
       const auth = request.headers.get("authorization");
       const referer = request.headers.get("referer");
       const paths = pathname.split('/')
@@ -81,7 +80,7 @@ const api_middleware =  async (pathname, request) => {
         data = await get_data(request) 
       }
   
-      const {default: apiMethod} = await import(`${Deno.cwd()}/src/_app/${apiPath}/${request.method.toLowerCase()}.js`)
+      const {default: apiMethod} = await import(`${window.extPath}/src/_app/${apiPath}/${request.method.toLowerCase()}.js`)
       const json = await apiMethod(request,data.result)
   
       if (data.result === 'form') {

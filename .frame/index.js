@@ -22,14 +22,17 @@ const middleware = async (request, info) => {
       try {
         
         const { pathname } = new URL(request.url);
-   
+        window.extPath = window._cwd ? window._cwd: Deno.cwd() 
    
         try{ 
-            const extensions = Deno.env.get('env') ? await import(`${Deno.cwd()}/extensions.js`) : await import(`${Deno.cwd()}/ext.js`)
+            
+            const extensions = Deno.env.get('env') ? await import(`${window.extPath}/extensions.js`) : await import(`${window.extPath}/ext.js`)
             await service(Object.values(extensions),pathname,request)
             return resp
         }catch(err){
-          console.log('no extension file',err)
+        
+        console.log(err)
+          throw Error(err.message)
         }
   
    
@@ -48,7 +51,7 @@ const middleware = async (request, info) => {
 }
 
 
-const port = 8080
-serve(middleware, { port });
+// const port = 9090
+// serve(middleware, { port });
 
 export default middleware

@@ -2,12 +2,12 @@ import { exists } from "https://deno.land/std/fs/mod.ts";
 
 const exts = ['html','jsx'] 
 let isError = false
-let _path = './src/_app'
+let _path = `${window._cwd ? window._cwd : '.'}/src/_app`
 const errorPath = `${_path}/error/pages/index.html`
 
 
 const html_middleware = async (pathname, req, path = _path) => {
-
+ 
   if(!pathname.includes('.')){
     let paramPage = ''
     let jsxPage = false
