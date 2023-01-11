@@ -88,12 +88,12 @@ const api_middleware =  async (pathname, request) => {
 
       if (request.method === 'POST') {
   
-        let page = '/status'
+        const searchParam = new URLSearchParams(json)
         // convert this to jsx for customizability
         return  Response.json(json,{
-          status,
+          status:303,
           headers:{
-            Location: `https://${window._host}/status`
+            Location: `https://${window._host}/status?${searchParam.toString()}`
           }
         });
       }
