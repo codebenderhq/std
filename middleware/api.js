@@ -82,16 +82,25 @@ const api_middleware =  async (pathname, request) => {
       const {default: apiMethod} = await import(`${window.extPath}/src/_app/${apiPath}/${request.method.toLowerCase()}.js`)
       const json = await apiMethod(request,data.result)
   
-      if (data.result === 'form') {
+      const status = json.status
+      delete json.status
+
+
+      if (request.method === 'POST') {
   
         let page = '/status'
         // convert this to jsx for customizability
-        return await html('/status')
+        return  Response.json(json,{
+          status,
+          headers:{
+            Location: `https://${window._host}/status`
+          }
+        });
       }
-  
-  
+
+   
       response = Response.json(json,{
-        status: json.status
+        status
       });
   
       
