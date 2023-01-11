@@ -7,8 +7,7 @@ const errorPath = `${_path}/error/pages/index.html`
 
 
 const html_middleware = async (pathname, req, path = _path) => {
- 
-  console.log(path)
+  
   if(!pathname.includes('.')){
     let paramPage = ''
     let jsxPage = false

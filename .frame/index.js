@@ -19,39 +19,26 @@ const service = async (ext, pathname, req) => {
 }
 
 const middleware = async (request, info) => {
-      try {
-        console.log(Deno.cwd())
+  
         const { pathname } = new URL(request.url);
         window.extPath = window?._cwd ? window._cwd: Deno.cwd() 
-        console.log(`${window.extPath}/ext.js`)
+ 
 
         try{ 
-            console.log(`${window.extPath}/ext.js`)
             const extensions = Deno.env.get('env') ? await import(`${window.extPath}/extensions.js`) : await import(`${window.extPath}/ext.js`)
             await service(Object.values(extensions),pathname,request)
             return resp
         }catch(err){
-            console.log(err)
-            throw Error(err.message)
-        }
+            window.dispatchLog({msg:err.message, err})
+            return Response.json({msg:'hello world'},{status:500})
+        }     
   
-   
-      
-      } catch (err) {
-          // look into support for logging service or build own
-          // we will send it from here to our custom logger
-          let msg = "Internal server error";
-      
-          // if (err.message.includes("Cannot read properties of undefined ")) {
-          //   msg = err.message;
-          // }
-      
-          return Response.json({msg, trace:err.message},{status:500})
-      }
 }
 
+if(import.meta.main){
+    const port = 9090
+    serve(middleware, { port });
+}
 
-// const port = 9090
-// serve(middleware, { port });
 
 export default middleware

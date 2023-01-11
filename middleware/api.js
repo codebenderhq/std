@@ -1,7 +1,6 @@
  import html from "./html.js";
 
 const valid_domain = (referer) => {
-  console.log(referer)
   // need to handle valid domain better as a person could just read the code and figure out what refer to use
   return ['sauveur.xyz','http://localhost:8080/','mmereko.co.za'].includes(referer)
 }
