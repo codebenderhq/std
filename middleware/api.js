@@ -59,6 +59,7 @@ const api_middleware =  async (pathname, request) => {
     try {
       let data ={};
       const auth = request.headers.get("authorization");
+      const host = request.headers.get("host");
       const referer = request.headers.get("referer");
       const paths = pathname.split('/')
       let subPath=''
@@ -91,9 +92,9 @@ const api_middleware =  async (pathname, request) => {
         const searchParam = new URLSearchParams(json)
         // convert this to jsx for customizability
         return  Response.json(json,{
-          status:303,
+          status,
           headers:{
-            Location: `https://${window._host}/status?${searchParam.toString()}`
+            Location: `https://${host}/status?${searchParam.toString()}`
           }
         });
       }
