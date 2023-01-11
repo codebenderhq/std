@@ -107,16 +107,13 @@ const api_middleware =  async (pathname, request) => {
       
     } catch (err) {
       // log();
-      globalThis.errorObject = {
+      const _err = {
          title: `SERVER:API:ERROR:${request.url}`,
         msg: err.message,
+        err
       }
-   
-      // TODO: Figire out who broke it 
-      // return html page instead
-      // use 303 page header response
-      console.log(globalThis.errorObject)
-      return await html('/error')
+      window.dispatchLog({..._err})
+      throw new Error(`SERVER:API:ERROR:${request.url}`,)
     }
    
     return response
