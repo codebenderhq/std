@@ -30,7 +30,7 @@ const middleware = async (request, info) => {
             return resp
         }catch(err){
             window.dispatchLog({msg:err.message, err})
-            return Response.json({msg:'hello world'},{status:500})
+            return Response.json({msg: 'Error:LEVEL1'},{status:500})
         }     
   
 }
