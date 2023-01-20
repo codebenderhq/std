@@ -8,13 +8,8 @@ const hmr = (pathname, request) => {
     
     const handleDisconnected = () => console.log("Connection closed");
     ws.onclose = () => handleDisconnected();
-    
-    const handleError = (e) =>
-      console.log(e instanceof ErrorEvent ? e.message : e.type);
-    ws.onerror = (e) => handleError(e);
-    
+ 
     const handleMessage = (ws, msg) => {
-      ws.send("You have a new message");
       console.log(msg);
     };
     
