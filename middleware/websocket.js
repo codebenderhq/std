@@ -1,4 +1,4 @@
-
+// https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
 
 const webSocket_middleware = async (pathname,request) => {
   if (request.headers.get("upgrade") === "websocket" && pathname === '/socket') {
