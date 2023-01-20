@@ -1,4 +1,4 @@
-import {serve} from "https://deno.land/std@0.167.0/http/server.ts";
+import {serve} from "https://deno.land/std/http/server.ts";
 import "https://deno.land/std/dotenv/load.ts";
 
 let resp;
@@ -29,7 +29,7 @@ const middleware = async (request, info) => {
             await service(Object.values(extensions),pathname,request)
             return resp
         }catch(err){
-            window.dispatchLog({msg:err.message, err})
+            window.dispactLog ? window.dispatchLog({msg:err.message, err}) : console.log(err)
             return Response.json({msg: 'Error:LEVEL1'},{status:500})
         }     
   
