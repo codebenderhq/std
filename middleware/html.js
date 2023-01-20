@@ -1,6 +1,7 @@
 import { exists } from "https://deno.land/std/fs/mod.ts";
+import Markdoc from 'npm:@markdoc/markdoc'
 
-const exts = ['html','jsx'] 
+const exts = ['html','jsx','md'] 
 let isError = false
 let _path = `${window._cwd ? window._cwd : '.'}/src/_app`
 const errorPath = `${_path}/error/pages/index.html`
@@ -17,27 +18,39 @@ const html_middleware = async (pathname, req, path = _path) => {
         let _pageSrc = `${path}/index.${ext}`
     
         if(pathname.split('/').length === 2 && pathname !== '/'){
-          _pageSrc = `${path}/${pathname}/pages/index.${ext}`;
+          _pageSrc = `${path}${pathname}/pages/index.${ext}`;
         } else if(pathname !== '/'){ 
-          _pageSrc = `${path}/${pathname.split('/')[1]}/pages/${pathname.split('/')[2]}.${ext}` 
-          paramPage = `${path}/${pathname.split('/')[1]}/pages/@.${ext}`;
+          _pageSrc = `${path}${pathname.split('/')[1]}/pages/${pathname.split('/')[2]}.${ext}` 
+          paramPage = `${path}${pathname.split('/')[1]}/pages/@.${ext}`;
         }
         
-    
         const isParamAvailible = await exists(paramPage)
         const pageExist = await exists(_pageSrc)
     
-        // console.log(pageExist, isParamAvailible)
+        // console.log(pageExist, isParamAvailible,pathname,_pageSrc)
     
-        if(!page && ext !== 'jsx'){
-          page = await Deno.readFile(pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error() );
-    
+        if(!page && pageExist && ext !== 'jsx'){
+        
+          page = await Deno.readTextFile(pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error() );
+
+          // console.log(_pageSrc)
+          if(ext === 'md'){
+            // const _md = await Deno.readTextFile(pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error() );
+            const ast = Markdoc.parse(page);
+            const content = Markdoc.transform(ast);
+            page = Markdoc.renderers.html(content)
+          }
+     
           // until a better soultion is found
           if(pathname === '/'){
             break;
           }
         }
-     
+    
+
+    
+ 
+
         if(ext === 'jsx' && isError && pageExist || isParamAvailible){
           jsxPage = await import(`../../../${pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error()}`)
         }
