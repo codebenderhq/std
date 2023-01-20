@@ -1,7 +1,6 @@
 import { exists } from "https://deno.land/std/fs/mod.ts";
-import Markdoc from 'npm:@markdoc/markdoc'
 
-const exts = ['html','jsx','md'] 
+const exts = ['html','jsx'] 
 let isError = false
 let _path = `${window._cwd ? window._cwd : '.'}/src/_app`
 const errorPath = `${_path}/error/pages/index.html`
@@ -33,13 +32,6 @@ const html_middleware = async (pathname, req, path = _path) => {
         if(!page && ext !== 'jsx'){
 
           page = await Deno.readTextFile(pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error() );
-
-          if(ext === 'md' && !isError){
-            const ast = Markdoc.parse(page);
-            const content = Markdoc.transform(ast);
-            page = Markdoc.renderers.html(content)
-          }
-        
           // until a better soultion is found
           if(pathname === '/'){
             break;
