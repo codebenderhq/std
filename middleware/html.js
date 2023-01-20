@@ -34,7 +34,7 @@ const html_middleware = async (pathname, req, path = _path) => {
           page = await Deno.readTextFile(pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error() );
 
           // console.log(_pageSrc)
-          if(ext === 'md'){
+          if(ext === 'md' && pageExist){
             // const _md = await Deno.readTextFile(pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error() );
             const ast = Markdoc.parse(page);
             const content = Markdoc.transform(ast);
