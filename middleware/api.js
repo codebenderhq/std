@@ -72,7 +72,8 @@ const api_middleware =  async (pathname, request) => {
     
       // added server cors
    
-      if(!is_authenticated(auth) && !valid_domain(request.headers.get("referer")) && !referer){
+ 
+      if(!is_authenticated(auth)){
         throw new Error('Unotharized')
       }
   
