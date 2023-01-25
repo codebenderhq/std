@@ -30,8 +30,8 @@ const html_middleware = async (pathname, req, path = _path) => {
         // console.log(pageExist, isParamAvailible)
     
         if(!page && ext !== 'jsx'){
-          page = await Deno.readFile(pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error() );
-    
+
+          page = await Deno.readTextFile(pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error() );
           // until a better soultion is found
           if(pathname === '/'){
             break;
@@ -65,9 +65,31 @@ export const error_response = () => {
   return html_response(Deno.readFile(errorPath))
 }
 
+const hmrScript = `
+<script>
+// Create WebSocket connection.
+const socket = new WebSocket('ws://localhost:9090/hmr');
+
+// Connection opened
+socket.addEventListener('open', (event) => {
+    socket.send('Start HMR!');
+});
+
+ // Listen for error
+ socket.addEventListener('close', (event) => {
+    console.log('connection close reload')
+    setTimeout(() => {
+        location.reload()
+    },1000)
+ 
+});
+</script>
+`
+
 // redirect to 303 error page
 const html_response = (res) => {
-  return new Response(res, {
+
+  return new Response(`${res}${Deno.env.get('env') ? hmrScript : ''}`, {
     headers: {
       "content-type": "text/html",
     },
