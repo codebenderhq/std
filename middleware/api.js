@@ -72,7 +72,7 @@ const api_middleware =  async (pathname, request) => {
     
      
       const apiPath = `${paths.reverse().join('/')}${subPath}`
-    
+ 
       // added server cors
       if(!is_authenticated(auth) && !isFormType){
         throw new Error('Unotharized')
