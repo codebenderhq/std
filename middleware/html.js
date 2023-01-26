@@ -42,11 +42,11 @@ const html_middleware = async (pathname, req, path = _path) => {
           }
      
           // until a better soultion is found
-          if(pathname === '/'){
+          if(pageExist){
             break;
           }
         }
-
+     
         if(ext === 'jsx' && isError && pageExist || isParamAvailible){
           jsxPage = await import(`../../../${pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error()}`)
         }
