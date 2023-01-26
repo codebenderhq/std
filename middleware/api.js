@@ -74,9 +74,7 @@ const api_middleware =  async (pathname, request) => {
       const apiPath = `${paths.reverse().join('/')}${subPath}`
     
       // added server cors
-   
- 
-      if(!is_authenticated(auth)){
+      if(!is_authenticated(auth) && !isFormType){
         throw new Error('Unotharized')
       }
   
@@ -87,7 +85,7 @@ const api_middleware =  async (pathname, request) => {
       }
       
 
-      const {default: apiMethod} = await import(`${window.extPath}/src/_app/${apiPath}/${request.method.toLowerCase()}.js`)
+      const {default: apiMethod} = await import(`${window.extPath}/src/_app/${apiPath}${request.method.toLowerCase()}.js`)
       const json = await apiMethod(request,data.result)
   
       const status = json.status
@@ -98,25 +96,28 @@ const api_middleware =  async (pathname, request) => {
   
         const returnPath = json.uri
         const redirectHost = json.redirect
+        delete json.redirect
         delete json.uri
         delete json.body
         delete json.status
         const searchParam = new URLSearchParams(json)
+       
         const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}?${searchParam.toString()}`
-  
-        return Response.redirect(Location)
+        // return Response.redirect(Location)
         // convert this to jsx for customizability
-        // return  Response.json({
-        //   status,
-        //   headers:{
-        //     Location: `https://${host}/status?${searchParam.toString()}`
-        //   }
-        // });
+        //             'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`
+        return  Response.json(json,{
+          status: 303,
+          headers:{
+            Location,
+            'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`
+          }
+        });
       }
 
    
       response = Response.json(json,{
-        status
+        status,
       });
   
       

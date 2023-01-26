@@ -3,7 +3,7 @@ import Markdoc from 'npm:@markdoc/markdoc'
 
 const exts = ['html','jsx','md'] 
 let isError = false
-let _path = `${window._cwd ? window._cwd : '.'}/src/_app`
+let _path = `${window._cwd ? window._cwd : '.'}/src/_app/`
 const errorPath = `${_path}/error/pages/index.html`
 
 
