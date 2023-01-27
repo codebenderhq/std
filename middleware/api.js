@@ -10,7 +10,7 @@ const is_authenticated = (auth) => {
 }
 
 const get_data = async (request) => {
-  let _data
+  let _data = {}
   let type = 'json'
   const referer = request.headers.get("referer");
   const isFormReq =
@@ -18,22 +18,25 @@ const get_data = async (request) => {
     "application/x-www-form-urlencoded" 
   const isBlob = request.headers.get("content-type") === "application/octet-stream"
 
-
+   
   if (isFormReq && referer) {
     let referer = new URL(request.headers.get("referer"));
-     _data = new URLSearchParams(await request.text());
+     let data = new URLSearchParams(await request.text());
 
-    for (const key of _data.keys()) {
-      const value = _data.get(key)
+    for (const key of data.keys()) {
+      const value = data.get(key)
       if(value !== ""){
-        data[key] = value
+        _data[key] = value
       }
     }
    
 
-    for (var key of referer.searchParams.keys()) {
-      _data.set(key, referer.searchParams.get(key));
-    }
+    // for (var key of referer.searchParams.keys()) {
+    //   data.set(key, referer.searchParams.get(key));
+    // }
+
+ 
+
     type='form'
   } 
   else if(isFormReq && !referer){
@@ -71,17 +74,18 @@ const api_middleware =  async (pathname, request) => {
       const apiPath = `${paths.reverse().join('/')}${subPath}`
     
       // added server cors
-   
- 
-      if(!is_authenticated(auth)){
+      if(!is_authenticated(auth) && !isFormType){
         throw new Error('Unotharized')
       }
   
+    
+
       if(request.method !== "GET"){
         data = await get_data(request) 
       }
-  
-      const {default: apiMethod} = await import(`${window.extPath}/src/_app/${apiPath}/${request.method.toLowerCase()}.js`)
+      
+
+      const {default: apiMethod} = await import(`${window.extPath}/src/_app/${apiPath}${request.method.toLowerCase()}.js`)
       const json = await apiMethod(request,data.result)
   
       const status = json.status
@@ -90,19 +94,30 @@ const api_middleware =  async (pathname, request) => {
 
       if (request.method === 'POST') {
   
+        const returnPath = json.uri
+        const redirectHost = json.redirect
+        delete json.redirect
+        delete json.uri
+        delete json.body
+        delete json.status
         const searchParam = new URLSearchParams(json)
+       
+        const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}?${searchParam.toString()}`
+        // return Response.redirect(Location)
         // convert this to jsx for customizability
+        //             'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`
         return  Response.json(json,{
-          status,
+          status: 303,
           headers:{
-            Location: `https://${host}/status?${searchParam.toString()}`
+            Location,
+            'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`
           }
         });
       }
 
    
       response = Response.json(json,{
-        status
+        status,
       });
   
       

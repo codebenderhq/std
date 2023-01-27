@@ -3,7 +3,7 @@ import Markdoc from 'npm:@markdoc/markdoc'
 
 const exts = ['html','jsx','md'] 
 let isError = false
-let _path = `${window._cwd ? window._cwd : '.'}/src/_app`
+let _path = `${window._cwd ? window._cwd : '.'}/src/_app/`
 const errorPath = `${_path}/error/pages/index.html`
 
 
@@ -42,11 +42,11 @@ const html_middleware = async (pathname, req, path = _path) => {
           }
      
           // until a better soultion is found
-          if(pathname === '/'){
+          if(pageExist){
             break;
           }
         }
-
+     
         if(ext === 'jsx' && isError && pageExist || isParamAvailible){
           jsxPage = await import(`../../../${pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error()}`)
         }
