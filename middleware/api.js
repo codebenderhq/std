@@ -101,17 +101,25 @@ const api_middleware =  async (pathname, request) => {
         delete json.body
         delete json.status
         const searchParam = new URLSearchParams(json)
+
+               
+        // const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}?${searchParam.toString()}`
        
-        const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}?${searchParam.toString()}`
+        const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}`
+
+        const headers = {
+          Location,
+          'set-cookie': json.setCookie ? `id=${json.auth};Secure;HttpOnly;SameSite=Lax;Path=/`: null,
+        }
+        //       'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`,
         // return Response.redirect(Location)
         // convert this to jsx for customizability
         //             'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`
-        return  Response.json(json,{
-          status: 303,
-          headers:{
-            Location,
-            'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`
-          }
+
+ 
+        return new Response(null,{
+          status: 302,
+          headers
         });
       }
 

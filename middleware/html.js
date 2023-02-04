@@ -99,7 +99,7 @@ socket.addEventListener('open', (event) => {
 // redirect to 303 error page
 const html_response = (res) => {
 
-  return new Response(`${res}${Deno.env.get('env') ? hmrScript : ''}`, {
+  return new Response(`${res}`, {
     headers: {
       "content-type": "text/html",
     },
