@@ -30,17 +30,34 @@ const middleware = async (request, info) => {
   
         const { pathname } = new URL(request.url);
         window.extPath = window?._cwd ? window._cwd: Deno.cwd() 
-        
+  
         if(!isAuthenticated(request)){
 
-            console.log(Deno.env.get('env'))
-            return Response.redirect(`https://${Deno.env.get('env') ? 'localhost:9001/account?domain=app.sauveur&redirect=localhost:9001?domain=dash.sauveur' : 'app.sauveur.xyz/account?redirect=dash.sauveur.xyx'} `)
-            // return new Response(null,{
-            //     status: 401,
-            //     headers: {
-            //         'WWW-Authenticate': 'Basic realm="Access to staging site"'
-            //     }
-            // })
+            const {pathname} = new URL(request.url)
+            
+     
+            const {default:app} = await import('app.sauveur.dev/index.js')
+            const appReq = new Request(`https://app.sauver.xyz/account?redirect=${request.headers.get('host')}`,{
+                headers:{
+                    host: 'app.sauver.xyz'
+                }
+            })
+ 
+            window._cwd = 'app.sauveur.dev'
+            if(pathname !== '/'){
+             
+                return app(request)
+            }
+
+
+            return app(appReq)
+            // return Response.redirect(`https://${Deno.env.get('env') ? 'app-sauveur.localhost:9001/account?redirect=dash-sauveur.localhost:9001' : 'app.sauveur.xyz/account?redirect=dash.sauveur.xyx'} `)
+            // // return new Response(null,{
+            // //     status: 401,
+            // //     headers: {
+            // //         'WWW-Authenticate': 'Basic realm="Access to staging site"'
+            // //     }
+            // // })
         }
 
         try{ 
