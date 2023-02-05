@@ -1,32 +1,40 @@
-import {serve} from "https://deno.land/std/http/server.ts";
-import { getCookies } from "https://deno.land/std/http/cookie.ts";
+import { serve } from "https://deno.land/std/http/server.ts";
 import "https://deno.land/std/dotenv/load.ts";
 
 let resp;
 
 const service = async (ext, pathname, req) => {
-    resp = null
-    if(!resp){
-        for (const element of ext) {
-
-            const _resp = await element(pathname, req)
-            if(_resp){
-                resp = _resp
-                break;
-            } 
-        }
+  resp = null;
+  if (!resp) {
+    for (const element of ext) {
+      const _resp = await element(pathname, req);
+      if (_resp) {
+        resp = _resp;
+        break;
+      }
     }
-  
-}
-
-const isAuthenticated = (req) => {
-   const {id} = getCookies(req.headers)
-
-   return id ? true : false
-
-}
+  }
+};
 
 const middleware = async (request, info) => {
+<<<<<<< HEAD
+  const { pathname } = new URL(request.url);
+  window.extPath = window?._cwd ? window._cwd : Deno.cwd();
+
+  try {
+    const extensions = Deno.env.get("env")
+      ? await import(`${window.extPath}/extensions.js`)
+      : await import(`${window.extPath}/ext.js`);
+    await service(Object.values(extensions), pathname, request);
+    return resp;
+  } catch (err) {
+    window.dispactLog
+      ? window.dispatchLog({ msg: err.message, err })
+      : console.log(err);
+    return Response.json({ msg: "Error:LEVEL1" }, { status: 500 });
+  }
+};
+=======
   
         const { pathname } = new URL(request.url);
         window.extPath = window?._cwd ? window._cwd: Deno.cwd() 
@@ -59,22 +67,11 @@ const middleware = async (request, info) => {
             // //     }
             // // })
         }
+>>>>>>> a4cdd34 (they might be changes)
 
-        try{ 
-            const extensions = Deno.env.get('env') ? await import(`${window.extPath}/extensions.js`) : await import(`${window.extPath}/ext.js`)
-            await service(Object.values(extensions),pathname,request)
-            return resp
-        }catch(err){
-            window.dispactLog ? window.dispatchLog({msg:err.message, err}) : console.log(err)
-            return Response.json({msg: 'Error:LEVEL1'},{status:500})
-        }     
-  
+if (import.meta.main) {
+  const port = 9090;
+  serve(middleware, { port });
 }
 
-if(import.meta.main){
-    const port = 9090
-    serve(middleware, { port });
-}
-
-
-export default middleware
+export default middleware;
