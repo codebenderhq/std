@@ -11,7 +11,7 @@ const html_middleware = async (pathname, req, path = _path) => {
     let paramPage = "";
     let jsxPage = false;
     let page;
-
+ 
     for (const ext of exts) {
       let _pageSrc = `${path}/index.${ext}`;
 

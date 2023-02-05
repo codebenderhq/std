@@ -25,21 +25,23 @@ const authenticate = async(pathname,request) => {
 
     const {pathname} = new URL(request.url)
 
-
+ 
     const {default:app} = await import('app.sauveur.dev/index.js')
+ 
+ 
     const appReq = new Request(`https://app.sauver.xyz/account?redirect=${request.headers.get('host')}`,{
         headers:{
             host: 'app.sauver.xyz'
         }
     })
 
-    window._cwd = 'app.sauveur.dev'
+    window._cwd = `${Deno.env.get('MAIN_PATH') ? `${Deno.env.get('MAIN_PATH')}app.sauveur.dev`  : "/apps/home/app.sauveur.xyz"}`
+    console.log(pathname)
     if(pathname !== '/'){
-
         return app(request)
     }
 
-
+ 
     return app(appReq)
         // return new Response(null,{
         //     status: 401,
@@ -47,7 +49,7 @@ const authenticate = async(pathname,request) => {
         //         'WWW-Authenticate': 'Basic realm="Access to staging site"'
         //     }
         // })
-      }
+    }
 }
 
 export default authenticate
