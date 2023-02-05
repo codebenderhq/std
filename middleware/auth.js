@@ -15,16 +15,17 @@ const isAuthenticated = (req) => {
 
 
 
-window.space = {
-    getAuthToken
-}
-
 const authenticate = async(pathname,request) => {
 
   if(!isAuthenticated(request)){
 
-    const {pathname} = new URL(request.url)
 
+    
+    const {pathname} = new URL(request.url)
+    
+    window.space = {
+        getAuthToken
+    }
  
     const {default:app} = await import('app.sauveur.dev/index.js')
  
@@ -36,7 +37,6 @@ const authenticate = async(pathname,request) => {
     })
 
     window._cwd = `${Deno.env.get('MAIN_PATH') ? `${Deno.env.get('MAIN_PATH')}app.sauveur.dev`  : "/apps/home/app.sauveur.xyz"}`
-    console.log(pathname)
     if(pathname !== '/'){
         return app(request)
     }
