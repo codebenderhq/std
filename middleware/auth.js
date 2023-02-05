@@ -27,7 +27,7 @@ const authenticate = async(pathname,request) => {
         getAuthToken
     }
  
-    const {default:app} = await import('app.sauveur.dev/index.js')
+    const {default:app} = await import(`app.sauveur.${Deno.env.get('env')? 'dev':'xyz'}/index.js`)
  
  
     const appReq = new Request(`https://app.sauver.xyz/account?redirect=${request.headers.get('host')}`,{
