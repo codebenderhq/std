@@ -4,15 +4,14 @@ import { getCookies } from "https://deno.land/std/http/cookie.ts";
 const getAuthToken = (req) => {
     const { id } = getCookies(req.headers);
   
-    return id
+  
+    return id ? id : req.headers.get('authorization')
 };
 
 const isAuthenticated = (req) => {
     const id = getAuthToken(req);
-   
     return id ? true : false;
 };
-
 
 
 
@@ -20,16 +19,28 @@ window.space = {
     getAuthToken
 }
 
-const authenticate = (pathname,request) => {
-    if (!isAuthenticated(request)) {
-        console.log(Deno.env.get("env"));
-        return Response.redirect(
-          `https://${
-            Deno.env.get("env")
-              ? "localhost:9001/account?domain=app.sauveur&redirect=localhost:9001?domain=dash.sauveur"
-              : "app.sauveur.xyz/account?redirect=dash.sauveur.xyx"
-          } `,
-        );
+const authenticate = async(pathname,request) => {
+
+  if(!isAuthenticated(request)){
+
+    const {pathname} = new URL(request.url)
+
+
+    const {default:app} = await import('app.sauveur.dev/index.js')
+    const appReq = new Request(`https://app.sauver.xyz/account?redirect=${request.headers.get('host')}`,{
+        headers:{
+            host: 'app.sauver.xyz'
+        }
+    })
+
+    window._cwd = 'app.sauveur.dev'
+    if(pathname !== '/'){
+
+        return app(request)
+    }
+
+
+    return app(appReq)
         // return new Response(null,{
         //     status: 401,
         //     headers: {
