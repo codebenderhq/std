@@ -105,11 +105,12 @@ const api_middleware =  async (pathname, request) => {
                
         // const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}?${searchParam.toString()}`
        
+        console.log(redirectHost)
         const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}`
 
         const headers = {
           Location,
-          'set-cookie': json.setCookie ? `id=${json.auth};Secure;HttpOnly;SameSite=Lax;Path=/`: null,
+          'set-cookie': json?.setCookie ? `id=${json.auth};Secure;HttpOnly;SameSite=Lax;Path=/`: null,
         }
         //       'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`,
         // return Response.redirect(Location)
