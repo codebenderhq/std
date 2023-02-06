@@ -30,6 +30,12 @@ const middleware = async (request, info) => {
             await service(Object.values(extensions),pathname,request)
             return resp
         }catch(err){
+            let contentBytes = new TextEncoder().encode(`\n${err}`);
+            writeAllSync(Deno.stdout, contentBytes);
+            const file = Deno.openSync('./test.file', {write: true, create:true, append:true});
+            writeAllSync(file, contentBytes);
+            file.close();
+
             window.dispactLog ? window.dispatchLog({msg:err.message, err}) : console.log(err)
             return Response.json({msg: 'Error:LEVEL1'},{status:500})
         }     
