@@ -23,31 +23,34 @@ const authenticate = async(pathname,request) => {
 
   if(!isAuthenticated(request)){
 
+  
     const {pathname} = new URL(request.url)
-
-
-    const {default:app} = await import('app.sauveur.dev/index.js')
-    const appReq = new Request(`https://app.sauver.xyz/account?redirect=${request.headers.get('host')}`,{
-        headers:{
-            host: 'app.sauver.xyz'
-        }
-    })
-
-    window._cwd = 'app.sauveur.dev'
-    if(pathname !== '/'){
-
-        return app(request)
+    // console.log(request.headers.get('referer').includes('account'))
+    if(pathname !== '/account' && !request.headers.get('referer')?.includes('account') ){
+        const Location = `http://${request.headers.get("host")}/account`;
+        return Response.redirect(Location)
     }
 
 
-    return app(appReq)
-        // return new Response(null,{
-        //     status: 401,
-        //     headers: {
-        //         'WWW-Authenticate': 'Basic realm="Access to staging site"'
-        //     }
-        // })
-      }
+    // const {default:app} = await import('app.sauveur.dev/index.js')
+    // const appReq = new Request(`https://app.sauver.xyz/account?redirect=${request.headers.get('host')}`,{
+    //     headers:{
+    //         host: 'app.sauver.xyz'
+    //     }
+    // })
+
+    // window._cwd = 'app.sauveur.dev'
+  
+
+
+    // return app(appReq)
+    //     // return new Response(null,{
+    //     //     status: 401,
+    //     //     headers: {
+    //     //         'WWW-Authenticate': 'Basic realm="Access to staging site"'
+    //     //     }
+    //     // })
+       }
 }
 
 export default authenticate

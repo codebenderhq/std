@@ -1,4 +1,5 @@
-import html from "./html.js";
+import { getCookies } from "https://deno.land/std/http/cookie.ts";
+
 
 const valid_domain = (referer) => {
   // need to handle valid domain better as a person could just read the code and figure out what refer to use
@@ -49,6 +50,7 @@ const get_data = async (request) => {
 };
 
 const api_middleware = async (pathname, request) => {
+  const { id } = getCookies(request.headers);
   const isFormType =
     request.headers.get("content-type") === "application/x-www-form-urlencoded";
   const isApiCall = pathname.includes("api") ||
@@ -67,9 +69,9 @@ const api_middleware = async (pathname, request) => {
       }
 
       const apiPath = `${paths.reverse().join("/")}${subPath}`;
-
+ 
       // added server cors
-      if (!is_authenticated(auth) && !isFormType) {
+      if ((!is_authenticated(auth) && !isFormType) && !id) {
         throw new Error("Unotharized");
       }
 
@@ -88,26 +90,36 @@ const api_middleware = async (pathname, request) => {
       if (request.method === "POST") {
         const returnPath = json.uri;
         const redirectHost = json.redirect;
+        const origin = request.headers.get("origin");
         delete json.redirect;
         delete json.uri;
         delete json.body;
         delete json.status;
         const searchParam = new URLSearchParams(json);
 
-        const Location = `https://${redirectHost ? redirectHost : host}${
+        
+        const Location = `${redirectHost ? `https://${redirectHost}` : origin}${
           returnPath ? returnPath : "/status"
         }?${searchParam.toString()}`;
+
+        const headers = {
+          Location,
+          'set-cookie': json?.setCookie ? `id=${json.auth};Secure;HttpOnly;SameSite=Lax;Path=/`: null,
+        }
+
         // return Response.redirect(Location)
         // convert this to jsx for customizability
         //             'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`
+
+        // : {
+        //   Location,
+        //   "Access-Control-Allow-Origin": `${
+        //     isFormType ? "app.sauveur.xyz" : "*"
+        //   }`,
+        // },
         return Response.json(json, {
           status: 303,
-          headers: {
-            Location,
-            "Access-Control-Allow-Origin": `${
-              isFormType ? "app.sauveur.xyz" : "*"
-            }`,
-          },
+          headers
         });
       }
 
@@ -121,7 +133,8 @@ const api_middleware = async (pathname, request) => {
         msg: err.message,
         err,
       };
-      window.dispatchLog({ ..._err });
+      console.log(_err)
+      // window.dispatchLog({ ..._err });
       throw new Error(`SERVER:API:ERROR:${request.url}`);
     }
 
