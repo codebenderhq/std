@@ -28,16 +28,15 @@ const middleware = async (request, info) => {
     return resp;
   } catch (err) {
   
-    window.dispactLog
-      ? window.dispatchLog({ msg: err.message, err })
-      : console.log(err);
+    // window.dispactLog
+    //  ? window.dispatchLog({ msg: err.message, err })
+    //  : console.log(err);
     return Response.json({ msg: "Error:LEVEL1" }, { status: 500 });
   }
 };
 
 if (import.meta.main) {
   const port = 9090;
-  serve(middleware, { port });
 }
 
 export default middleware;
