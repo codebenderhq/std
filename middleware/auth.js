@@ -27,6 +27,7 @@ const authenticate = async(pathname,request) => {
         getAuthToken
     }
  
+
     const {default:app} = await import(`app.sauveur.${Deno.env.get('env') ? 'dev':'xyz'}/index.js`)
  
  

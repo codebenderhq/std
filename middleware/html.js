@@ -7,15 +7,14 @@ let isError = false
 let _path = `${window._cwd ? window._cwd : '.'}/src/_app/`
 const errorPath = `${_path}/error/pages/index.html`
 
-
 const html_middleware = async (pathname, req, path = _path) => {
-  
-  if(!pathname.includes('.')){
-    let paramPage = ''
-    let jsxPage = false
+  if (!pathname.includes(".")) {
+    let paramPage = "";
+    let jsxPage = false;
     let page;
+    
    
-      for (const ext of exts) {
+    for (const ext of exts) {
         let _pageSrc = `${path}/index.${ext}`
     
         if(pathname.split('/').length === 2 && pathname !== '/'){
@@ -47,33 +46,37 @@ const html_middleware = async (pathname, req, path = _path) => {
             break;
           }
         }
-     
-        if(ext === 'jsx' && isError && pageExist || isParamAvailible){
-          jsxPage = await import(`../../../${pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error()}`)
+
+        // until a better soultion is found
+        if (pageExist) {
+          break;
         }
       }
-    
-      if(jsxPage){
-        return jsxPage.default()
-      }
-    
-  
-    
-  
-    return html_response(page)
-  }
 
+      if (ext === "jsx" && isError && pageExist || isParamAvailible) {
+        jsxPage = await import(
+          `../../../${
+            pageExist ? _pageSrc : isParamAvailible ? paramPage : set_error()
+          }`
+        );
+      }
+    }
+
+    if (jsxPage) {
+      return jsxPage.default();
+    }
+
+    return html_response(page);
 }
 
 const set_error = () => {
-  isError = true
-  return errorPath
-
-}
+  isError = true;
+  return errorPath;
+};
 
 export const error_response = () => {
-  return html_response(Deno.readFile(errorPath))
-}
+  return html_response(Deno.readFile(errorPath));
+};
 
 const hmrScript = `
 <script>
@@ -94,7 +97,7 @@ socket.addEventListener('open', (event) => {
  
 });
 </script>
-`
+`;
 
 // redirect to 303 error page
 const html_response = (res) => {
@@ -105,8 +108,6 @@ const html_response = (res) => {
       "content-type": "text/html",
     },
   });
-}
+};
 
-
-
-export default html_middleware
+export default html_middleware;
