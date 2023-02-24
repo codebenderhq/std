@@ -111,7 +111,7 @@ const api_middleware =  async (pathname, request) => {
         // https://developer.mozilla.org/en-US/docs/Web/Security/Types_of_attacks#session_fixation
         const headers = {
           Location,
-          'set-cookie': json.setCookie ? `id=${json.auth};Secure;HttpOnly;SameSite=Lax;Path=/`: null,
+          'set-cookie': json?.setCookie ? `id=${json.auth};Secure;HttpOnly;SameSite=Lax;Path=/`: null,
         }
         //       'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`,
         // return Response.redirect(Location)
