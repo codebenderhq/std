@@ -37,6 +37,7 @@ const middleware = async (request, info) => {
 
 if (import.meta.main) {
   const port = 9090;
+  serve(middleware, { port });
 }
 
 export default middleware;
