@@ -101,13 +101,14 @@ const api_middleware =  async (pathname, request) => {
         delete json.body
         delete json.status
         const searchParam = new URLSearchParams(json)
-
-               
+ 
         // const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}?${searchParam.toString()}`
        
-        console.log(redirectHost)
-        const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}`
+        const Location = `https://${redirectHost ? redirectHost: host}${returnPath ? returnPath: '/status'}?${searchParam.toString()}`
 
+        console.log(Location)
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies
+        // https://developer.mozilla.org/en-US/docs/Web/Security/Types_of_attacks#session_fixation
         const headers = {
           Location,
           'set-cookie': json?.setCookie ? `id=${json.auth};Secure;HttpOnly;SameSite=Lax;Path=/`: null,
@@ -116,7 +117,7 @@ const api_middleware =  async (pathname, request) => {
         // return Response.redirect(Location)
         // convert this to jsx for customizability
         //             'Access-Control-Allow-Origin': `${isFormType ? 'app.sauveur.xyz' : '*' }`
-
+ 
  
         return new Response(null,{
           status: 302,
