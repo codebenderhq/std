@@ -1,6 +1,7 @@
 import { exists } from "https://deno.land/std/fs/mod.ts";
 // import Markdoc from 'npm:@markdoc/markdoc'
 
+// const exts = ['html','jsx','md'] 
 const exts = ['html','jsx'] 
 let isError = false
 let _path = `${window._cwd ? window._cwd : '.'}/src/_app/`
@@ -97,7 +98,6 @@ socket.addEventListener('open', (event) => {
 
 // redirect to 303 error page
 const html_response = (res) => {
-
   // Will check what is up with this HMR
   // ${Deno.env.get('env') ? hmrScript : ''}
   return new Response(`${res}`, {
