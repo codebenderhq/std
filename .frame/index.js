@@ -27,6 +27,7 @@ const middleware = async (request, info) => {
     await service(Object.values(extensions), pathname, request);
     return resp;
   } catch (err) {
+    console.log(err)
   
     // window.dispactLog
     //  ? window.dispatchLog({ msg: err.message, err })
