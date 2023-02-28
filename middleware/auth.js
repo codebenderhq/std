@@ -32,7 +32,6 @@ const authenticate = async(pathname,request) => {
         return Response.redirect(Location)
     }
 
-
     // const {default:app} = await import('app.sauveur.dev/index.js')
     // const appReq = new Request(`https://app.sauver.xyz/account?redirect=${request.headers.get('host')}`,{
     //     headers:{
