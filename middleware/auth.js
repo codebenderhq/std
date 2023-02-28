@@ -27,7 +27,7 @@ const authenticate = async(pathname,request) => {
     const {pathname} = new URL(request.url)
  
     // console.log(request.headers.get('referer').includes('account'))
-    if(pathname !== '/account' && pathname !== '/account/register'  && !request.headers.get('referer')?.includes('account') ){
+    if((pathname !== '/account' && pathname !== '/account/register')  && !request.headers.get('referer')?.includes('account') ){
         const Location = `http://${request.headers.get("host")}/account`;
         return Response.redirect(Location)
     }
