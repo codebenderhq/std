@@ -135,7 +135,7 @@ const api_middleware = async (pathname, request) => {
       };
       console.log(_err)
       // window.dispatchLog({ ..._err });
-      throw new Error(`SERVER:API:ERROR:${request.url}`);
+      throw new Error(`SERVER:API:ERROR:${request.url}:${err.message}`);
     }
 
     return response;

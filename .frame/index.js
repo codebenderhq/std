@@ -30,7 +30,7 @@ const middleware = async (request, info) => {
     window.dispactLog
       ? window.dispatchLog({ msg: err.message, err })
       : console.log(err);
-    return Response.json({ msg: "Error:LEVEL1" }, { status: 500 });
+    return Response.json({ msg: "Error:LEVEL1", err: err.message }, { status: 500 });
   }
 };
 
